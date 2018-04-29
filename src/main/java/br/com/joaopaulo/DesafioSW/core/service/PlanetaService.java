@@ -3,6 +3,8 @@ package br.com.joaopaulo.DesafioSW.core.service;
 import java.util.List;
 
 import br.com.joaopaulo.DesafioSW.dto.PlanetaDTO;
+import br.com.joaopaulo.DesafioSW.exception.CamposPlanetaInvalidosException;
+import br.com.joaopaulo.DesafioSW.exception.NomeDuplicadoPlanetaException;
 import br.com.joaopaulo.DesafioSW.exception.PlanetaNotFoundException;
 import br.com.joaopaulo.DesafioSW.model.Planeta;
 
@@ -20,7 +22,7 @@ public interface PlanetaService {
 	 *            Informações do novo registro de planeta
 	 * @return Informações do novo registro de planeta
 	 */
-	public PlanetaDTO create(PlanetaDTO planetaDTO);
+	public PlanetaDTO create(PlanetaDTO planetaDTO) throws NomeDuplicadoPlanetaException, CamposPlanetaInvalidosException;
 
 	/**
 	 * Apaga um registro de planeta

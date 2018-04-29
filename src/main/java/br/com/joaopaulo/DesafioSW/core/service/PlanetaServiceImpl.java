@@ -5,11 +5,14 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.ConstraintViolationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.joaopaulo.DesafioSW.core.repository.PlanetaRepository;
 import br.com.joaopaulo.DesafioSW.dto.PlanetaDTO;
+import br.com.joaopaulo.DesafioSW.exception.CamposPlanetaInvalidosException;
 import br.com.joaopaulo.DesafioSW.exception.JsonToResultadoAPIException;
 import br.com.joaopaulo.DesafioSW.exception.NomeDuplicadoPlanetaException;
 import br.com.joaopaulo.DesafioSW.exception.PlanetaNotFoundException;
@@ -41,9 +44,16 @@ public class PlanetaServiceImpl implements PlanetaService {
 	 * @param planetaDTO
 	 *            Informações do planeta que deve ser criado
 	 * @return Informações do planeta criado
+	 * @throws NomeDuplicadoPlanetaException
+	 * @throws CamposPlanetaInvalidosException
 	 */
 	@Override
-	public PlanetaDTO create(PlanetaDTO planetaDTO) {
+	public PlanetaDTO create(PlanetaDTO planetaDTO) throws NomeDuplicadoPlanetaException, CamposPlanetaInvalidosException {
+		//Testa nulidade do nome do planeta para evitar erros na consulta
+		if (planetaDTO.getNome() == null) {
+			throw new CamposPlanetaInvalidosException();
+		}
+
 		//Primeiro testa se já existe um planeta cadastrado com o mesmo nome
 		Optional<Planeta> resultado = repository.findByNomeIgnoreCase(planetaDTO.getNome());
 
@@ -60,7 +70,11 @@ public class PlanetaServiceImpl implements PlanetaService {
 		Planeta planeta = builder.build();
 		
 		//Salva o planeta
-		repository.save(planeta);
+		try {
+			repository.save(planeta);
+		} catch (ConstraintViolationException c) {
+			throw new CamposPlanetaInvalidosException();
+		}
 
 		return convertToDTO(planeta);
 	}
