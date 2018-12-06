@@ -1,6 +1,5 @@
 package br.com.joaopaulo.DesafioSW.model;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -14,13 +13,8 @@ public class Planeta {
 	@Id
 	private String	id;
 
-	@NotEmpty
 	private String	nome;
-
-	@NotEmpty
 	private String	clima;
-
-	@NotEmpty
 	private String	terreno;
 
 	public Planeta() {}

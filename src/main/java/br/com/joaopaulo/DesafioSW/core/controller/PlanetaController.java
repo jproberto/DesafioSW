@@ -5,9 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.joaopaulo.DesafioSW.core.service.PlanetaService;
 import br.com.joaopaulo.DesafioSW.dto.PlanetaDTO;
-import br.com.joaopaulo.DesafioSW.exception.CamposPlanetaInvalidosException;
-import br.com.joaopaulo.DesafioSW.exception.NomeDuplicadoPlanetaException;
 import br.com.joaopaulo.DesafioSW.exception.PlanetaNotFoundException;
 
 /**
@@ -40,7 +36,7 @@ public final class PlanetaController {
 
 	@RequestMapping(value = "criar", method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public List<PlanetaDTO> create(@RequestBody @Valid PlanetaDTO planetaDTO) throws NomeDuplicadoPlanetaException, CamposPlanetaInvalidosException {
+	public List<PlanetaDTO> create(@RequestBody @Valid PlanetaDTO planetaDTO) {
 		service.create(planetaDTO);
 		return service.findAll();
 	}
@@ -68,19 +64,5 @@ public final class PlanetaController {
 
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public ResponseEntity<Object> handlePlanetaNotFound(PlanetaNotFoundException ex) {
-		return new ResponseEntity<Object>(ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND);
-	}
-
-	@ExceptionHandler
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ResponseEntity<Object> handleNomeDuplicadoPlanetaException(NomeDuplicadoPlanetaException ex) {
-		return new ResponseEntity<Object>(ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
-	}
-
-	@ExceptionHandler
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ResponseEntity<Object> handleCamposPlanetaInvalidosException(CamposPlanetaInvalidosException ex) {
-		return new ResponseEntity<Object>(ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
-	}
+	public void handlePlanetaNotFound(PlanetaNotFoundException ex) {}
 }
