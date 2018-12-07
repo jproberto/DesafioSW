@@ -20,7 +20,7 @@ public interface PlanetaService {
 	 *            Informações do novo registro de planeta
 	 * @return Informações do novo registro de planeta
 	 */
-	public PlanetaDTO create(PlanetaDTO planetaDTO);
+	public void create(PlanetaDTO planetaDTO);
 
 	/**
 	 * Apaga um registro de planeta

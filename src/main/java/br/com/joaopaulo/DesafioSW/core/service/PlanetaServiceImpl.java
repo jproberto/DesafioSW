@@ -40,10 +40,9 @@ public class PlanetaServiceImpl implements PlanetaService {
 	 * 
 	 * @param planetaDTO
 	 *            Informações do planeta que deve ser criado
-	 * @return Informações do planeta criado
 	 */
 	@Override
-	public PlanetaDTO create(PlanetaDTO planetaDTO) {
+	public void create(PlanetaDTO planetaDTO) {
 		//Primeiro testa se já existe um planeta cadastrado com o mesmo nome
 		Optional<Planeta> resultado = repository.findByNomeIgnoreCase(planetaDTO.getNome());
 
@@ -62,7 +61,8 @@ public class PlanetaServiceImpl implements PlanetaService {
 		//Salva o planeta
 		repository.save(planeta);
 
-		return convertToDTO(planeta);
+		//Seta o id salvo no DTO para retorno
+		planetaDTO.setId(planeta.getId());
 	}
 
 	/**
