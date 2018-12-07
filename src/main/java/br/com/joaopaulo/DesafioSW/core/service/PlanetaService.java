@@ -34,13 +34,6 @@ public interface PlanetaService {
 	public PlanetaDTO delete(String id);
 
 	/**
-	 * Encontra todos os registros de planeta
-	 * 
-	 * @return Informações de todos os registros encontrados
-	 */
-	public List<PlanetaDTO> findAll();
-
-	/**
 	 * Busca por um único registro
 	 * 
 	 * @param id
@@ -51,14 +44,6 @@ public interface PlanetaService {
 	 */
 	public PlanetaDTO findById(String id);
 
-	/**
-	 * Busca por um único registro
-	 * 
-	 * @param nome
-	 *            O nome do planeta desejado
-	 * @return A informação encontrada para o planeta desejado
-	 * @throws PlanetaNotFoundException
-	 *             se nenhum planeta é encontrado para o nome informado
-	 */
-	public PlanetaDTO findByNome(String nome);
+	//documentar
+	public List<PlanetaDTO> findPlanetas(PlanetaDTO planeta);
 }

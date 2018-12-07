@@ -3,6 +3,7 @@ package br.com.joaopaulo.DesafioSW.core.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Example;
 import org.springframework.data.repository.Repository;
 
 import br.com.joaopaulo.DesafioSW.model.Planeta;
@@ -20,12 +21,8 @@ public interface PlanetaRepository extends Repository<Planeta, String> {
 	 */
 	public void delete(Planeta planeta);
 
-	/**
-	 * Lista todos os registros de planetas do banco de dados
-	 * 
-	 * @return As informações de todos os registros de planeta encontrados no banco de dados
-	 */
-	public List<Planeta> findAll();
+	//TODO documentar
+	public List<Planeta> findAll(Example<Planeta> planetaExample);
 
 	/**
 	 * Busca a informação de um único registro

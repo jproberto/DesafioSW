@@ -1,6 +1,5 @@
 package br.com.joaopaulo.DesafioSW.core.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.joaopaulo.DesafioSW.core.service.PlanetaService;
 import br.com.joaopaulo.DesafioSW.dto.PlanetaDTO;
+import br.com.joaopaulo.DesafioSW.exception.NomeDuplicadoPlanetaException;
 import br.com.joaopaulo.DesafioSW.exception.PlanetaNotFoundException;
 
 /**
@@ -40,20 +40,19 @@ public final class PlanetaController {
 	public ResponseEntity<List<PlanetaDTO>> find(@RequestParam(value = "nome", required = false) String nome) {
 		List<PlanetaDTO> planetas;
 
-		//Pesquisar o query by example
-		if (nome == null || "".equals(nome)) {
-			planetas = service.findAll();
-		} else {
-			planetas = new ArrayList<PlanetaDTO>();
-			planetas.add(service.findByNome(nome));
-		}
+		PlanetaDTO planetaDTO = new PlanetaDTO();
+		planetaDTO.setNome(nome);
 
-		//TODO apagar comentário depois
-		//Se a lista vier completa do findAll ou o planeta vier certo no findByNome, tudo certo
-		//Se a lista vier vazia do findAll, o mais corrento é o status 200 tbm, pra não confundir o cliente
-		//Se o findByNome não encontrar ninguém, o service levanta exceção que é tratada pelo @ExceptionHandler
-		//Pensar se o service deve levantar exceção mesmo. No momento acho que sim
+		planetas = service.findPlanetas(planetaDTO);
+
 		return ResponseEntity.ok(planetas);
+	}
+
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<PlanetaDTO> findById(@PathVariable("id") String id) {
+		PlanetaDTO planeta = service.findById(id);
+
+		return ResponseEntity.ok(planeta);
 	}
 
 	@PostMapping
@@ -74,18 +73,15 @@ public final class PlanetaController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping(value = "/{id}")
-	public ResponseEntity<PlanetaDTO> findById(@PathVariable("id") String id) {
-		PlanetaDTO planeta = service.findById(id);
-		
-		//TODO apagar comentário depois
-		//Se encontrar, tudo certo
-		//Se o findById não encontrar ninguém, o service levanta exceção que é tratada pelo @ExceptionHandler
-		//Pensar se o service deve levantar exceção mesmo. No momento acho que sim
-		return ResponseEntity.ok(planeta);
+	@ExceptionHandler
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ResponseEntity<String> handlePlanetaNotFound(PlanetaNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 	}
 
 	@ExceptionHandler
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public void handlePlanetaNotFound(PlanetaNotFoundException ex) {}
+	//	@ResponseStatus(HttpStatus.CONFLICT)
+	public ResponseEntity<String> handleNomeDuplicado(NomeDuplicadoPlanetaException ex) {
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+	}
 }

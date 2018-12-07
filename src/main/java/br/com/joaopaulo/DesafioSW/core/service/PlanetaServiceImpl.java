@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import br.com.joaopaulo.DesafioSW.core.repository.PlanetaRepository;
@@ -50,6 +51,7 @@ public class PlanetaServiceImpl implements PlanetaService {
 			throw new NomeDuplicadoPlanetaException(planetaDTO.getNome());
 		}
 
+		//TODO mudar para o método do converter a ser criado
 		//Usa o builder para montar o planeta de acordo com as informações recebidas no DTO
 		PlanetaBuilder builder = Planeta.getBuilder();
 		builder.nome(planetaDTO.getNome());
@@ -81,19 +83,6 @@ public class PlanetaServiceImpl implements PlanetaService {
 	}
 
 	/**
-	 * Lista todos os registros de planetas do banco de dados
-	 * 
-	 * @return As informações de todos os registros de planeta encontrados no banco de dados
-	 */
-	@Override
-	public List<PlanetaDTO> findAll() {
-		List<Planeta> todosPlanetas = repository.findAll();
-
-		//Converte os planetas retornados do banco de dados para DTOs com as informações necessárias
-		return convertToDTOs(todosPlanetas);
-	}
-
-	/**
 	 * Busca a informação de um único registro
 	 * 
 	 * @param id
@@ -109,22 +98,14 @@ public class PlanetaServiceImpl implements PlanetaService {
 		return convertToDTO(planeta);
 	}
 
-	/**
-	 * Busca a informação de um único registro
-	 * 
-	 * @param nome
-	 *            O nome do planeta desejado
-	 * @return As informações do planeta desejado. Se nenhum registro for encontrado para aquele nome, retorna um objeto {@link Optional} vazio.
-	 */
 	@Override
-	public PlanetaDTO findByNome(String nome) {
-		//para garantir que existe um planeta para o nome passado
-		Planeta planeta = findPlanetaByNome(nome);
+	public List<PlanetaDTO> findPlanetas(PlanetaDTO planeta) {
+		List<Planeta> planetas = repository.findAll(Example.of(convertToPlaneta(planeta)));
 
-		//retorna o DTO referente ao planeta encontrado
-		return convertToDTO(planeta);
+		return convertToDTOs(planetas);
 	}
 
+	//TODO extrair para classe converter
 	/**
 	 * Cria um DTO com as informações do planeta passado
 	 * 
@@ -145,6 +126,16 @@ public class PlanetaServiceImpl implements PlanetaService {
 		dto.setQuantidadeAparicoesFilmes(getQuantidadeAparicoesFilmesPorNomePlaneta(planeta.getNome()));
 
 		return dto;
+	}
+
+	//TODO documentar
+	public Planeta convertToPlaneta(PlanetaDTO planetaDTO) {
+		PlanetaBuilder builder = Planeta.getBuilder();
+		builder.nome(planetaDTO.getNome());
+		builder.clima(planetaDTO.getClima());
+		builder.terreno(planetaDTO.getTerreno());
+
+		return builder.build();
 	}
 
 	/**
@@ -170,19 +161,6 @@ public class PlanetaServiceImpl implements PlanetaService {
 	private Planeta findPlanetaById(String id) {
 		Optional<Planeta> resultado = repository.findById(id);
 		return resultado.orElseThrow(() -> new PlanetaNotFoundException("id", id));
-	}
-
-	/**
-	 * Método para validar que existe um {@link Planeta} para o nome passado.
-	 * 
-	 * @param nome
-	 * @return o {@link Planeta} referente ao nome passado
-	 * @throws PlanetaNotFoundException
-	 *             quando não existir um {@link Planeta} para o nome
-	 */
-	private Planeta findPlanetaByNome(String nome) {
-		Optional<Planeta> resultado = repository.findByNomeIgnoreCase(nome);
-		return resultado.orElseThrow(() -> new PlanetaNotFoundException("nome", nome));
 	}
 
 	private int getQuantidadeAparicoesFilmesPorNomePlaneta(String nomePlaneta) {
