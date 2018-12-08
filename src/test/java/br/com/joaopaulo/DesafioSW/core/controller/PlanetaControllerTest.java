@@ -238,6 +238,16 @@ public class PlanetaControllerTest {
 		}
 	}
 
+	@Test
+	public void testaDeleteSemId() {
+		//Testa se ao tentar deletar sem passar o id retorna o HTTP Status 405
+		try {
+			rest.exchange(URL, HttpMethod.DELETE, criaHeader(), Void.class);
+		} catch (Exception e) {
+			Assert.assertEquals("405 null", e.getMessage());
+		}
+	}
+
 	private PlanetaDTO montaPlanetaDTOTeste(String nome) {
 		PlanetaDTO planetaDTO = new PlanetaDTO();
 		planetaDTO.setNome(nome);
