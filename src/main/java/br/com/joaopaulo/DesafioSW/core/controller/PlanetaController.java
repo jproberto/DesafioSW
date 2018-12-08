@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.joaopaulo.DesafioSW.core.service.PlanetaService;
@@ -74,14 +73,17 @@ public final class PlanetaController {
 	}
 
 	@ExceptionHandler
-	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ResponseEntity<String> handlePlanetaNotFound(PlanetaNotFoundException ex) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
 	}
 
 	@ExceptionHandler
-	//	@ResponseStatus(HttpStatus.CONFLICT)
 	public ResponseEntity<String> handleNomeDuplicado(NomeDuplicadoPlanetaException ex) {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+	}
+
+	@ExceptionHandler
+	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
 	}
 }

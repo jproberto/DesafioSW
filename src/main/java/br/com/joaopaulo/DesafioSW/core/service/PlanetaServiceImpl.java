@@ -44,7 +44,12 @@ public class PlanetaServiceImpl implements PlanetaService {
 	 */
 	@Override
 	public void create(PlanetaDTO planetaDTO) {
-		//Primeiro testa se já existe um planeta cadastrado com o mesmo nome
+		//Verifica se os campos estão todos preenchidos correta
+		checaNuloOuVazio(planetaDTO.getNome());
+		checaNuloOuVazio(planetaDTO.getClima());
+		checaNuloOuVazio(planetaDTO.getTerreno());
+
+		//Testa se já existe um planeta cadastrado com o mesmo nome
 		Optional<Planeta> resultado = repository.findByNomeIgnoreCase(planetaDTO.getNome());
 
 		if (resultado.isPresent()) {
@@ -65,6 +70,13 @@ public class PlanetaServiceImpl implements PlanetaService {
 
 		//Seta o id salvo no DTO para retorno
 		planetaDTO.setId(planeta.getId());
+	}
+
+	//Verifica se os valores passados para os atributos são válidos.
+	private void checaNuloOuVazio(String string) {
+		if (string == null || string.equals("")) {
+			throw new IllegalArgumentException("Valor inválido");
+		}
 	}
 
 	/**

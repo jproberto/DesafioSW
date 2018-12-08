@@ -48,6 +48,10 @@ public class RestClient {
 	 * @throws JsonToResultadoAPIException
 	 */
 	public int getQuantidadeAparicoesFilmesPorNomePlaneta(String nomePlaneta) throws JsonToResultadoAPIException {
+		if (nomePlaneta == null || nomePlaneta.equals("")) {
+			throw new IllegalArgumentException();
+		}
+
 		//Chamada à SWAPI, concatenando o nome do planeta à String da URI
 		ResponseEntity<String> result = restTemplate.exchange(uri + nomePlaneta, HttpMethod.GET, entity, String.class);
 
