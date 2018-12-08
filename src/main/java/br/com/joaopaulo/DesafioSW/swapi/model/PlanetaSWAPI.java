@@ -1,4 +1,4 @@
-package br.com.joaopaulo.DesafioSW.swapi;
+package br.com.joaopaulo.DesafioSW.swapi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Representa o planeta obtido pela consulta à SWAPI, com um array dos filmes em que ele aparece.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PlanetaAPI {
+public class PlanetaSWAPI {
 	private String[] films;
 
 	public String[] getFilms() {

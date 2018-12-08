@@ -6,63 +6,78 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.joaopaulo.DesafioSW.core.service.PlanetaService;
 import br.com.joaopaulo.DesafioSW.dto.PlanetaDTO;
+import br.com.joaopaulo.DesafioSW.exception.NomeDuplicadoPlanetaException;
 import br.com.joaopaulo.DesafioSW.exception.PlanetaNotFoundException;
 
 /**
  * Esse controlador é o responsável pela API pública usada para gerenciar as informações dos planetas
  *
  */
-
 @RestController
 @RequestMapping("/planetas")
 public final class PlanetaController {
 
-	private final PlanetaService service;
-
 	@Autowired
-	public PlanetaController(PlanetaService service) {
-		this.service = service;
+	private PlanetaService service;
+
+	@GetMapping
+	public ResponseEntity<List<PlanetaDTO>> find(@RequestParam(value = "nome", required = false) String nome) {
+		List<PlanetaDTO> planetas;
+
+		PlanetaDTO planetaDTO = new PlanetaDTO();
+		planetaDTO.setNome(nome);
+
+		planetas = service.findPlanetas(planetaDTO);
+
+		return ResponseEntity.ok(planetas);
 	}
 
-	@RequestMapping(value = "criar", method = RequestMethod.POST)
-	@ResponseStatus(HttpStatus.CREATED)
-	public List<PlanetaDTO> create(@RequestBody @Valid PlanetaDTO planetaDTO) {
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<PlanetaDTO> findById(@PathVariable("id") String id) {
+		PlanetaDTO planeta = service.findById(id);
+
+		return ResponseEntity.ok(planeta);
+	}
+
+	@PostMapping
+	public ResponseEntity<PlanetaDTO> create(@RequestBody @Valid PlanetaDTO planetaDTO) {
 		service.create(planetaDTO);
-		return service.findAll();
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(planetaDTO);
 	}
 
-	@RequestMapping(value = "excluir/{id}", method = RequestMethod.DELETE)
-	public List<PlanetaDTO> delete(@PathVariable("id") String id) {
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<Void> delete(@PathVariable("id") String id) {
 		service.delete(id);
-		return service.findAll();
-	}
 
-	@RequestMapping(method = RequestMethod.GET)
-	public List<PlanetaDTO> findAll() {
-		return service.findAll();
-	}
-
-	@RequestMapping(value = "id/{id}", method = RequestMethod.GET)
-	public PlanetaDTO findById(@PathVariable("id") String id) {
-		return service.findById(id);
-	}
-
-	@RequestMapping(value = "nome/{nome}", method = RequestMethod.GET)
-	public PlanetaDTO findByNome(@PathVariable("nome") String nome) {
-		return service.findByNome(nome);
+		return ResponseEntity.noContent().build();
 	}
 
 	@ExceptionHandler
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public void handlePlanetaNotFound(PlanetaNotFoundException ex) {}
+	public ResponseEntity<String> handlePlanetaNotFound(PlanetaNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	}
+
+	@ExceptionHandler
+	public ResponseEntity<String> handleNomeDuplicado(NomeDuplicadoPlanetaException ex) {
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+	}
+
+	@ExceptionHandler
+	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	}
 }
