@@ -21,7 +21,13 @@ public interface PlanetaRepository extends Repository<Planeta, String> {
 	 */
 	public void delete(Planeta planeta);
 
-	//TODO documentar
+	/**
+	 * Busca todos os registros de planeta que tenham propriedades iguais ao exemplo passado. As propriedades setadas como null no exemplo serão ignoradas.
+	 * 
+	 * @param planetaExample
+	 *            Um exemplo preenchido com as informações dos planetas que se deseja buscar
+	 * @return Todos os planetas que se encaixem nos critérios do exemplo
+	 */
 	public List<Planeta> findAll(Example<Planeta> planetaExample);
 
 	/**

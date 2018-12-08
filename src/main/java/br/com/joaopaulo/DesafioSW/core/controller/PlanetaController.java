@@ -26,8 +26,6 @@ import br.com.joaopaulo.DesafioSW.exception.PlanetaNotFoundException;
  * Esse controlador é o responsável pela API pública usada para gerenciar as informações dos planetas
  *
  */
-//TODO conferir exceções e status http dos retornos etc
-//TODO comentar os métodos
 @RestController
 @RequestMapping("/planetas")
 public final class PlanetaController {
@@ -65,10 +63,6 @@ public final class PlanetaController {
 	public ResponseEntity<Void> delete(@PathVariable("id") String id) {
 		service.delete(id);
 
-		//TODO apagar comentário depois
-		//Se encontrar, tudo certo
-		//Se o findById não encontrar ninguém, o service levanta exceção que é tratada pelo @ExceptionHandler
-		//Pensar se o service deve levantar exceção mesmo. No momento acho que sim
 		return ResponseEntity.noContent().build();
 	}
 

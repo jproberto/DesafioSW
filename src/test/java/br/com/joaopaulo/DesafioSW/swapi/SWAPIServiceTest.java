@@ -5,14 +5,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 import br.com.joaopaulo.DesafioSW.exception.JsonToResultadoAPIException;
+import br.com.joaopaulo.DesafioSW.swapi.service.SWAPIServicePlaneta;
 
-public class RestClientTest {
+public class SWAPIServiceTest {
 
-	private RestClient restClient;
+	private SWAPIServicePlaneta swapiService;
 
 	@Before
 	public void setUp() {
-		restClient = new RestClient();
+		swapiService = new SWAPIServicePlaneta();
 	}
 
 	@Test
@@ -20,7 +21,7 @@ public class RestClientTest {
 		//Nome de um planeta válido, previamente verificado na API externa
 		String nomePlanetaValido = "Alderaan";
 
-		Assert.assertEquals(2, restClient.getQuantidadeAparicoesFilmesPorNomePlaneta(nomePlanetaValido));
+		Assert.assertEquals(new Integer(2), swapiService.getTotalAparicoesFilmes(nomePlanetaValido));
 	}
 
 	@Test
@@ -28,7 +29,7 @@ public class RestClientTest {
 		//Nome de um planeta inválido
 		String nomePlanetaInvalido = "PlanetaInválido";
 
-		Assert.assertEquals(0, restClient.getQuantidadeAparicoesFilmesPorNomePlaneta(nomePlanetaInvalido));
+		Assert.assertEquals(new Integer(0), swapiService.getTotalAparicoesFilmes(nomePlanetaInvalido));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -36,14 +37,14 @@ public class RestClientTest {
 		//Nome de  planeta nulo
 		String nomePlanetaNulo = null;
 
-		Assert.assertEquals(0, restClient.getQuantidadeAparicoesFilmesPorNomePlaneta(nomePlanetaNulo));
+		swapiService.getTotalAparicoesFilmes(nomePlanetaNulo);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testaNomeVazio() throws JsonToResultadoAPIException {
 		//Nome de  planeta vazio
-		String nomePlanetaNulo = "";
+		String nomePlanetaVazio = "";
 
-		Assert.assertEquals(0, restClient.getQuantidadeAparicoesFilmesPorNomePlaneta(nomePlanetaNulo));
+		swapiService.getTotalAparicoesFilmes(nomePlanetaVazio);
 	}
 }
