@@ -1,21 +1,25 @@
-DesafioSW
+# DesafioSW
 
-API feita por João Paulo de Souza Roberto como parte do desafio.
+API feita por João Paulo de Souza Roberto como parte do desafio proposto pelo processo seletivo da B2W.
 
-Algumas considerações: 
-- o banco utilizado foi o MongoDB;
-- para colocar a API no ar, basta executar a classe AppConfig que se encontra no pacote br.com.joaopaulo.DesafioSW.core;
-- para utilizar as funcionalidades solicitadas:
-	- Adicionar um planeta (com nome, clima e terreno)
-		POST /planetas/criar
-		Corpo da requisição: {"nome":"Nome do planeta","terreno":"Terreno do planeta","clima":"Clima do planeta"}
-	- Listar planetas
-		GET /planetas
-	- Buscar por nome
-		GET /planetas/nome/{nome do planeta}
-	- Buscar por ID
-		GET planetas/id/{id do planeta}
-	- Remover planeta
-		DELETE planetas/excluir/{id do planeta}
+## Considerações 
+* o banco utilizado foi o MongoDB;
+* para colocar a API no ar, basta executar a classe AppConfig que se encontra no pacote br.com.joaopaulo.DesafioSW.core.
+
+## Endpoints
+| Endpoint | Método | Ação |
+| -------- | ------ |----- |
+| /planetas | GET | Retorna a lista de planetas. Suporta filtro por nome, basta adicionar "?nome={nome}".
+| /planetas/{id} | GET | Retorna o planeta especificado pelo id.
+| /planetas/{id} | DELETE | Exclui o planeta especificado pelo id. |
+| /planetas | POST | Cria um planeta. O corpo da requisição deve ser um json com o formato especificado abaixo. |
 	
-Do. Or do not. There is no try.
+ ```json
+ {
+   "nome": "Tatooine",
+    "clima": "arid",
+    "terreno": "desert"
+   }
+   ```
+	
+**Do. Or do not. There is no try.**
