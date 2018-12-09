@@ -60,6 +60,8 @@ public class PlanetaServiceImpl implements PlanetaService {
 
 		//Seta o id salvo no DTO para retorno
 		planetaDTO.setId(planeta.getId());
+		//Busca a quantidade de aparições para o planeta salvo
+		planetaDTO.setQuantidadeAparicoesFilmes(getTotalAparicoesFilmesPorNomePlaneta(planetaDTO.getNome()));
 	}
 
 	//Verifica se os valores passados para os atributos são válidos.
